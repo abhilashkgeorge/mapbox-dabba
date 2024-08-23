@@ -10,7 +10,7 @@ function App() {
     const mapRef = useRef(null);
     const [lng, setLng] = useState(77.62684);
     const [lat, setLat] = useState(12.937156);
-    const [zoom, setZoom] = useState(14);
+    const [zoom, setZoom] = useState(16);
 
     useEffect(() => {
         function rotateCamera(timestamp) {
@@ -27,38 +27,70 @@ function App() {
             center: [lng, lat],
         });
 
+        console.log(mapRef.current);
+
         mapRef.current.on("style.load", () => {
             // mapRef.current.setConfigProperty("basemap", "darkPreset", "dawn");
         });
 
         mapRef.current.on("style.load", () => {
-            mapRef.current.addSource("eraser", {
-                type: "geojson",
-                data: {
-                    type: "FeatureCollection",
-                    features: [
-                        {
-                            type: "Feature",
-                            properties: {},
-                            geometry: {
-                                coordinates: [
-                                    [
-                                        [77.62745838260054, 12.93715932226209],
-                                        [77.6273241385162, 12.937332519826285],
-                                        [77.62720353529443, 12.937240953321094],
-                                        [77.62733405149396, 12.937063337442765],
-                                        [77.62745838260054, 12.93715932226209],
-                                    ],
-                                ],
-                                type: "Polygon",
-                            },
-                        },
-                    ],
-                },
-            });
-
             mapRef.current.on("load", () => {
-                rotateCamera(0);
+                mapRef.current.addSource("places", {
+                    // This GeoJSON contains features that include an "icon"
+                    // property. The value of the "icon" property corresponds
+                    // to an image in the Mapbox Streets style's sprite.
+                    type: "geojson",
+                    data: {
+                        type: "FeatureCollection",
+                        features: [
+                            {
+                                type: "Feature",
+                                properties: {
+                                    description:
+                                        '<strong>Make it Mount Pleasant</strong><p><a href="http://www.mtpleasantdc.com/makeitmtpleasant" target="_blank" title="Opens in a new window">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>',
+                                    icon: "theatre",
+                                },
+                                geometry: {
+                                    type: "Point",
+                                    coordinates: [lng, lat],
+                                },
+                            },
+                        ],
+                    },
+                });
+
+                mapRef.current.addLayer({
+                    id: "places",
+                    type: "symbol",
+                    source: "places",
+                    layout: {
+                        "icon-image": ["get", "icon"],
+                        "icon-allow-overlap": true,
+                    },
+                });
+
+                mapRef.current.on("click", "places", (e) => {
+                    const coordinates =
+                        e.features[0].geometry.coordinates.slice();
+                    const description = e.features[0].properties.description;
+
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                        coordinates[0] +=
+                            e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+
+                    console.log("Clicked pointer");
+                });
+
+                mapRef.current.on("mouseenter", "places", () => {
+                    mapRef.current.getCanvas().style.cursor = "pointer";
+                });
+
+                mapRef.current.on("mouseleave", "places", () => {
+                    mapRef.current.getCanvas().style.cursor = "";
+                });
+
+                // rotateCamera(0);
                 mapRef.current.addSource("maine", {
                     type: "geojson",
                     data: {
@@ -222,81 +254,92 @@ function App() {
                         "line-width": 3,
                     },
                 });
+
+                mapRef.current.addLayer({
+                    id: "custom-threebox-model1",
+                    type: "custom",
+                    renderingMode: "3d",
+                    onAdd: function () {
+                        window.tb = new Threebox(
+                            mapRef.current,
+                            mapRef.current.getCanvas().getContext("webgl"),
+                            { defaultLights: true },
+                        );
+                        const scale = 3.2;
+                        const options = {
+                            obj: "src/assets/tower.glb",
+                            type: "glb",
+                            scale: { x: 0.2, y: 0.2, z: 0.2 },
+                            units: "meters",
+                            rotation: { x: 90, y: -90, z: 0 },
+                        };
+
+                        window.tb.loadObj(options, (model) => {
+                            model.setCoords([lng, lat]);
+                            model.setRotation({ x: 0, y: 0, z: 241 });
+                            window.tb.add(model);
+                        });
+
+                        // window.tb.drawBoundingBox;
+                    },
+                    render: function () {
+                        window.tb.update();
+                    },
+                });
+
+                mapRef.current.on("click", "custom-threebox-model1", (e) => {
+                    alert("clicked");
+                });
+
+                mapRef.current.on(
+                    "mouseenter",
+                    "custom-threebox-model1",
+                    () => {
+                        mapRef.current.getCanvas().style.cursor = "pointer";
+                    },
+                );
+
+                mapRef.current.on(
+                    "mouseleave",
+                    "custom-threebox-model1",
+                    () => {
+                        mapRef.current.getCanvas().style.cursor = "";
+                    },
+                );
             });
 
-            // mapRef.current.addSource("model", {
-            //     type: "geojson",
-            //     data: {
-            //         type: "Feature",
-            //         properties: {
-            //             "model-uri":
-            //                 "https://docs.mapbox.com/mapbox-gl-js/assets/tower.glb",
-            //         },
-            //         geometry: {
-            //             coordinates: [77.62745838260054, 12.93715932226209],
-            //             type: "Point",
-            //         },
-            //     },
-            // });
             // mapRef.current.addLayer({
-            //     id: "layer",
-            //     type: "symbol",
-            //     source: "model",
-            // });
+            //     id: "custom-threebox-model",
+            //     type: "custom",
+            //     renderingMode: "3d",
+            //     onAdd: function () {
+            //         window.tb = new Threebox(
+            //             mapRef.current,
+            //             mapRef.current.getCanvas().getContext("webgl"),
+            //             { defaultLights: true },
+            //         );
+            //         const scale = 3.2;
+            //         const options = {
+            //             obj: "src/assets/LorientTrees.glb",
+            //             type: "glb",
+            //             scale: { x: scale, y: scale, z: 2.7 },
+            //             units: "meters",
+            //             rotation: { x: 90, y: -90, z: 0 },
+            //         };
 
-            // mapRef.current.addLayer({
-            //     id: "tower",
-            //     type: "model",
-            //     source: "model",
-            //     // minzoom: 15,
-            //     layout: {
-            //         "model-id": ["get", "model-uri"],
+            //         window.tb.loadObj(options, (model) => {
+            //             model.setCoords([
+            //                 77.60978239671488, 12.955358783463154,
+            //             ]);
+            //             model.setRotation({ x: 0, y: 0, z: 241 });
+            //             window.tb.add(model);
+            //         });
             //     },
-            //     paint: {
-            //         "model-opacity": 1,
-            //         "model-rotation": [0.0, 0.0, 0.0],
-            //         "model-scale": [0.2, 0.2, 0.1],
-            //         "model-color-mix-intensity": 0,
-            //         "model-cast-shadows": true,
-            //         "model-emissive-strength": 0.6,
+
+            //     render: function () {
+            //         window.tb.update();
             //     },
             // });
-        });
-
-        mapRef.current.on("style.load", () => {
-            mapRef.current.addLayer({
-                id: "custom-threebox-model",
-                type: "custom",
-                renderingMode: "3d",
-                onAdd: function () {
-                    window.tb = new Threebox(
-                        mapRef.current,
-                        mapRef.current.getCanvas().getContext("webgl"),
-                        { defaultLights: true },
-                    );
-                    const scale = 3.2;
-                    const options = {
-                        obj: "src/assets/LorientTrees.glb",
-                        type: "glb",
-                        scale: { x: scale, y: scale, z: 2.7 },
-                        units: "meters",
-                        rotation: { x: 90, y: -90, z: 0 },
-                    };
-
-                    window.tb.loadObj(options, (model) => {
-                        model.setCoords([
-                          77.60978239671488,
-                          12.955358783463154
-                        ]);
-                        model.setRotation({ x: 0, y: 0, z: 241 });
-                        window.tb.add(model);
-                    });
-                },
-
-                render: function () {
-                    window.tb.update();
-                },
-            });
         });
 
         return () => mapRef.current.remove();

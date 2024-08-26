@@ -10,6 +10,7 @@ function App() {
     const [lng, setLng] = useState(77.62684);
     const [lat, setLat] = useState(12.937156);
     const [zoom, setZoom] = useState(19);
+    // const origin = [77.62450644413747, 12.934922611429101];
     const origin = [lng, lat];
     const modelPositon = [77.62732288751079, 12.93719081056058];
 
@@ -80,6 +81,42 @@ function App() {
         ));
 
         map.on("style.load", function () {
+            // Add another building
+            const oppBuildingOptions = {
+                id: "opp-building",
+                type: "glb",
+                obj: "src/assets/apartment.glb",
+                scale: 5,
+                rotation: { x: 90, y: 40, z: 0 },
+                adjustment: { x: 0, y: 0, z: 0 },
+                units: "meters",
+                anchor: "center",
+            };
+
+            //This is where the model is added
+            tb.loadObj(oppBuildingOptions, (model) => {
+                console.log("loaded object");
+                const obj = model.setCoords([
+                    77.62692186385078, 12.936948284631768,
+                ]);
+                obj.addEventListener("SelectedChange", onSelectedChange, false);
+                tb.add(obj);
+            });
+
+            map.addLayer({
+                id: "opp_building",
+                type: "custom",
+                renderingMode: "3d",
+                source: {
+                    features: [],
+                },
+                render: function (gl, matrix) {
+                    tb.update();
+                },
+            });
+        });
+
+        map.on("style.load", function () {
             map.addSource("maine", {
                 type: "geojson",
                 data: geoJsonFeature,
@@ -136,43 +173,15 @@ function App() {
                     tb.update();
                 },
             });
-
-            function onSelectedChange(e) {
-                let selected = e.detail.selected;
-                console.log("The model is now ", selected);
-            }
-        });
-
-        map.on("style.load", function () {
-            const options = {
-                obj: "src/assets/LorientTrees.glb",
-                type: "glb",
-                scale: { x: 1, y: 1, z: 2.7 },
-                units: "meters",
-                rotation: { x: 90, y: -90, z: 0 },
-            };
-
-            tb.loadObj(options, (model) => {
-                console.log("loaded object");
-                const obj = model.setCoords(modelPositon);
-                obj.addEventListener("SelectedChange", onSelectedChange, false);
-                tb.add(obj);
-            });
-            map.addLayer({
-                id: "trees_layer",
-                type: "custom",
-                render: function (gl, matrix) {
-                    tb.update();
-                },
-            });
-            function onSelectedChange(e) {
-                let selected = e.detail.selected;
-                console.log("selected? " + selected);
-            }
         });
 
         return () => map.remove();
     }, [lng, lat]);
+
+    function onSelectedChange(e) {
+        let selected = e.detail.selected;
+        console.log("The model is now ", selected);
+    }
 
     return (
         <div className="App">

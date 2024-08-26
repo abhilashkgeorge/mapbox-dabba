@@ -10,7 +10,7 @@ function App() {
     const mapRef = useRef(null);
     const [lng, setLng] = useState(77.62684);
     const [lat, setLat] = useState(12.937156);
-    const [zoom, setZoom] = useState(16);
+    const [zoom, setZoom] = useState(19);
 
     useEffect(() => {
         function rotateCamera(timestamp) {
@@ -35,60 +35,6 @@ function App() {
 
         mapRef.current.on("style.load", () => {
             mapRef.current.on("load", () => {
-                mapRef.current.addSource("places", {
-                    // This GeoJSON contains features that include an "icon"
-                    // property. The value of the "icon" property corresponds
-                    // to an image in the Mapbox Streets style's sprite.
-                    type: "geojson",
-                    data: {
-                        type: "FeatureCollection",
-                        features: [
-                            {
-                                type: "Feature",
-                                properties: {
-                                    description:
-                                        '<strong>Make it Mount Pleasant</strong><p><a href="http://www.mtpleasantdc.com/makeitmtpleasant" target="_blank" title="Opens in a new window">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>',
-                                    icon: "theatre",
-                                },
-                                geometry: {
-                                    type: "Point",
-                                    coordinates: [lng, lat],
-                                },
-                            },
-                        ],
-                    },
-                });
-
-                mapRef.current.addLayer({
-                    id: "places",
-                    type: "symbol",
-                    source: "places",
-                    layout: {
-                        "icon-image": ["get", "icon"],
-                        "icon-allow-overlap": true,
-                    },
-                });
-
-                mapRef.current.on("click", "places", (e) => {
-                    const coordinates =
-                        e.features[0].geometry.coordinates.slice();
-                    const description = e.features[0].properties.description;
-
-                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                        coordinates[0] +=
-                            e.lngLat.lng > coordinates[0] ? 360 : -360;
-                    }
-
-                    console.log("Clicked pointer");
-                });
-
-                mapRef.current.on("mouseenter", "places", () => {
-                    mapRef.current.getCanvas().style.cursor = "pointer";
-                });
-
-                mapRef.current.on("mouseleave", "places", () => {
-                    mapRef.current.getCanvas().style.cursor = "";
-                });
 
                 // rotateCamera(0);
                 mapRef.current.addSource("maine", {
@@ -256,56 +202,37 @@ function App() {
                 });
 
                 mapRef.current.addLayer({
-                    id: "custom-threebox-model1",
+                    id: "rmz-gateway",
                     type: "custom",
                     renderingMode: "3d",
-                    onAdd: function () {
+                    onAdd: function (map, gl) {
                         window.tb = new Threebox(
                             mapRef.current,
                             mapRef.current.getCanvas().getContext("webgl"),
                             { defaultLights: true },
                         );
-                        const scale = 3.2;
                         const options = {
-                            obj: "src/assets/tower.glb",
+                            obj: "src/assets/building__interior_effect.glb",
                             type: "glb",
-                            scale: { x: 0.2, y: 0.2, z: 0.2 },
+                            scale: { x: 0.8, y: 1, z: 0.6 },
                             units: "meters",
                             rotation: { x: 90, y: -90, z: 0 },
                         };
 
                         window.tb.loadObj(options, (model) => {
-                            model.setCoords([lng, lat]);
-                            model.setRotation({ x: 0, y: 0, z: 241 });
-                            window.tb.add(model);
+                          model.setCoords([77.62732365299053, 12.937333647640244]);
+                          model.setRotation({ x: 0, y: 0, z: -135 });
+                          window.tb.add(model);
                         });
-
-                        // window.tb.drawBoundingBox;
                     },
-                    render: function () {
+                    render: function (gl, matrix) {
                         window.tb.update();
                     },
+                    queryRenderedFeatures: function(geometry) {
+                      return window.tb.queryRenderedFeatures(geometry);
+                    }
                 });
 
-                mapRef.current.on("click", "custom-threebox-model1", (e) => {
-                    alert("clicked");
-                });
-
-                mapRef.current.on(
-                    "mouseenter",
-                    "custom-threebox-model1",
-                    () => {
-                        mapRef.current.getCanvas().style.cursor = "pointer";
-                    },
-                );
-
-                mapRef.current.on(
-                    "mouseleave",
-                    "custom-threebox-model1",
-                    () => {
-                        mapRef.current.getCanvas().style.cursor = "";
-                    },
-                );
             });
 
             // mapRef.current.addLayer({
@@ -347,7 +274,7 @@ function App() {
 
     return (
         <div className="App">
-            <div ref={mapContainer} className="map-container" />
+            <div ref={mapContainer} className="map-container" style={{ pointerEvents: 'auto' }} />
         </div>
     );
 }

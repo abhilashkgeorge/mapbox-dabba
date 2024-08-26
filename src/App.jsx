@@ -11,6 +11,7 @@ function App() {
     const [lat, setLat] = useState(12.937156);
     const [zoom, setZoom] = useState(19);
     const origin = [lng, lat];
+    const modelPositon = [77.62732288751079, 12.93719081056058];
 
     const geoJsonFeature = {
         type: "FeatureCollection",
@@ -66,7 +67,7 @@ function App() {
             zoom: zoom,
             pitch: 60,
             bearing: -150,
-            center: [lng, lat],
+            center: origin,
         });
 
         const tb = (window.tb = new Threebox(
@@ -74,10 +75,7 @@ function App() {
             map.getCanvas().getContext("webgl"),
             {
                 defaultLights: true,
-                enableSelectingFeatures: true, 
-                enableSelectingObjects: true, 
-                enableRotatingObjects: true, 
-                enableTooltips: true,
+                enableSelectingObjects: true,
             },
         ));
 
@@ -115,8 +113,8 @@ function App() {
                 id: "rmz-gateway-bld",
                 type: "gltf",
                 obj: "src/assets/building.glb",
-                scale: { x: 0.8, y: 1, z: 0.6 },
-                rotation: { x: 90, y: -90, z: 0 },
+                scale: { x: 1, y: 1, z: 1 },
+                rotation: { x: 90, y: -50, z: 0 },
                 adjustment: { x: 0, y: 0, z: 0 },
                 units: "meters",
                 anchor: "center",
@@ -125,7 +123,7 @@ function App() {
             //This is where the model is added
             tb.loadObj(options, (model) => {
                 console.log("loaded object");
-                const obj = model.setCoords(origin);
+                const obj = model.setCoords(modelPositon);
                 obj.addEventListener("SelectedChange", onSelectedChange, false);
                 tb.add(obj);
             });
@@ -140,7 +138,8 @@ function App() {
             });
 
             function onSelectedChange(e) {
-                let selected = e.detail.selected; 
+                let selected = e.detail.selected;
+                console.log("The model is now ", selected);
             }
         });
 
@@ -155,7 +154,7 @@ function App() {
 
             tb.loadObj(options, (model) => {
                 console.log("loaded object");
-                const obj = model.setCoords([77.6273412463683, 12.937064728098775]);
+                const obj = model.setCoords(modelPositon);
                 obj.addEventListener("SelectedChange", onSelectedChange, false);
                 tb.add(obj);
             });
@@ -167,7 +166,7 @@ function App() {
                 },
             });
             function onSelectedChange(e) {
-                let selected = e.detail.selected; 
+                let selected = e.detail.selected;
                 console.log("selected? " + selected);
             }
         });

@@ -1,10 +1,13 @@
-import mapboxgl, { LngLatLike} from "mapbox-gl";
+import mapboxgl, { LngLatLike } from "mapbox-gl";
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Threebox } from "threebox-plugin";
 import type { GeoJSON } from "geojson";
-import { Button } from "./components/ui/button"
+import { Button } from "./components/ui/button";
+import type { ThreeboxOptions } from "./lib/types";
+import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
@@ -13,6 +16,9 @@ function App() {
     const [lng, setLng] = useState<number>(77.62684);
     const [lat, setLat] = useState<number>(12.937156);
     const [zoom, setZoom] = useState<number>(19);
+    
+    const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const origin: LngLatLike = [lng, lat];
     const modelPositon: LngLatLike = [77.62732288751079, 12.93719081056058];
@@ -95,6 +101,7 @@ function App() {
                 adjustment: { x: 0, y: 0, z: 0 },
                 units: "meters",
                 anchor: "center",
+                bbox: false,
             };
 
             //This is where the model is added
@@ -159,11 +166,11 @@ function App() {
                 adjustment: { x: 0, y: 0, z: 0 },
                 units: "meters",
                 anchor: "center",
+                bbox: false,
             };
 
             //This is where the model is added
             tb.loadObj(options, (model: any) => {
-                console.log("loaded object");
                 const obj = model.setCoords(modelPositon);
                 obj.addEventListener("SelectedChange", onSelectedChange, false);
                 tb.add(obj);
@@ -182,9 +189,19 @@ function App() {
         return () => map.remove();
     }, [lng, lat]);
 
-    function onSelectedChange(e: CustomEvent<{ selected: boolean }>): void {
+    function onSelectedChange(e: CustomEvent<any>): void {
         let selected = e.detail.selected;
-        console.log("The model is now ", selected);
+        let buildingId = e.detail.userData.id ?? null;
+        console.log("The model is now ", selected, buildingId);
+
+        if (selected && buildingId) {
+            openBuildingModal(buildingId);
+        }
+    }
+
+    function openBuildingModal(buildingId: string): void {
+        setSelectedBuilding(buildingId);
+        setIsModalOpen(true);
     }
 
     return (
@@ -194,20 +211,19 @@ function App() {
                 className="map-container"
                 style={{ pointerEvents: "auto" }}
             />
-            <Button>Click me</Button>
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] m-auto p-0 bg-white bg-opacity-90">
+                    <DialogHeader className="p-6">
+                        <DialogTitle>{selectedBuilding}</DialogTitle>
+                    </DialogHeader>
+                    <div className="p-6 overflow-auto h-[calc(90vh-4rem)]">
+                        {/* Add your building-specific content here */}
+                        <p>Details about {selectedBuilding}</p>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
 
 export default App;
-
-interface ThreeboxOptions {
-    id: string;
-    type: string;
-    obj: string;
-    scale: number | { x: number; y: number; z: number };
-    rotation: { x: number; y: number; z: number };
-    adjustment: { x: number; y: number; z: number };
-    units: string;
-    anchor: string;
-}

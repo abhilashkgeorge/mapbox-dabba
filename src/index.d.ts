@@ -1,2 +1,2 @@
 declare module 'threebox-plugin';
-import "vite/client"
+import 'vite/client';

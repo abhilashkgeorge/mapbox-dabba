@@ -1,8 +1,8 @@
-import React, { FC, ReactNode, StrictMode, useMemo } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import Building from './Building.tsx'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { FC, ReactNode, StrictMode, useMemo } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import Building from './Building.tsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -19,35 +19,29 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const wallets = useMemo(
-      () => [
-          new UnsafeBurnerWalletAdapter(),
-      ],
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [network]
+    () => [new UnsafeBurnerWalletAdapter()],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [network]
   );
 
   return (
-      <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect>
-              <WalletModalProvider >{children}</WalletModalProvider>
-          </WalletProvider>
-      </ConnectionProvider>
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 };
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Context>
-    <Router>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="buildings/:buildingId" element={<Building />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="buildings/:buildingId" element={<Building />} />
+        </Routes>
+      </Router>
     </Context>
-  </StrictMode>,
-)
-
-
-
-
+  </StrictMode>
+);

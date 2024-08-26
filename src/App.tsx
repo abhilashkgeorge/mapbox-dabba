@@ -1,10 +1,13 @@
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Threebox } from "threebox-plugin";
+import type { GeoJSON } from "geojson";
+import { Button } from "./components/ui/button"
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
+
 function App() {
     const mapContainer = useRef(null);
     const [lng, setLng] = useState(77.62684);
@@ -15,7 +18,7 @@ function App() {
     const origin: [number, number] = [lng, lat];
     const modelPositon = [77.62732288751079, 12.93719081056058];
 
-    const geoJsonFeature = {
+    const geoJsonFeature: GeoJSON = {
         type: "FeatureCollection",
         features: [
             {
@@ -191,6 +194,7 @@ function App() {
                 className="map-container"
                 style={{ pointerEvents: "auto" }}
             />
+            <Button>Click me</Button>
         </div>
     );
 }

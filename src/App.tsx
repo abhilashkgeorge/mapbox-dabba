@@ -1,4 +1,4 @@
-import mapboxgl from "mapbox-gl";
+import mapboxgl, { LngLatLike} from "mapbox-gl";
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -9,14 +9,13 @@ import { Button } from "./components/ui/button"
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
 function App() {
-    const mapContainer = useRef(null);
-    const [lng, setLng] = useState(77.62684);
-    const [lat, setLat] = useState(12.937156);
-    const [zoom, setZoom] = useState(19);
+    const mapContainer = useRef<HTMLDivElement | null>(null);
+    const [lng, setLng] = useState<number>(77.62684);
+    const [lat, setLat] = useState<number>(12.937156);
+    const [zoom, setZoom] = useState<number>(19);
 
-    // const origin = [77.62450644413747, 12.934922611429101];
-    const origin: [number, number] = [lng, lat];
-    const modelPositon = [77.62732288751079, 12.93719081056058];
+    const origin: LngLatLike = [lng, lat];
+    const modelPositon: LngLatLike = [77.62732288751079, 12.93719081056058];
 
     const geoJsonFeature: GeoJSON = {
         type: "FeatureCollection",
@@ -75,6 +74,7 @@ function App() {
             center: origin,
         });
 
+        // TODO: Fix this later. Don't pollute the global namespace
         const tb = (window.tb = new Threebox(
             map,
             map.getCanvas().getContext("webgl") as WebGLRenderingContext,
@@ -86,7 +86,7 @@ function App() {
 
         map.on("style.load", function () {
             // Add another building
-            const oppBuildingOptions = {
+            const oppBuildingOptions: ThreeboxOptions = {
                 id: "opp-building",
                 type: "glb",
                 obj: "src/assets/apartment.glb",
@@ -182,7 +182,7 @@ function App() {
         return () => map.remove();
     }, [lng, lat]);
 
-    function onSelectedChange(e) {
+    function onSelectedChange(e: CustomEvent<{ selected: boolean }>): void {
         let selected = e.detail.selected;
         console.log("The model is now ", selected);
     }
@@ -200,3 +200,14 @@ function App() {
 }
 
 export default App;
+
+interface ThreeboxOptions {
+    id: string;
+    type: string;
+    obj: string;
+    scale: number | { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number };
+    adjustment: { x: number; y: number; z: number };
+    units: string;
+    anchor: string;
+}

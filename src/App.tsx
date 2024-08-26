@@ -10,8 +10,9 @@ function App() {
     const [lng, setLng] = useState(77.62684);
     const [lat, setLat] = useState(12.937156);
     const [zoom, setZoom] = useState(19);
+
     // const origin = [77.62450644413747, 12.934922611429101];
-    const origin = [lng, lat];
+    const origin: [number, number] = [lng, lat];
     const modelPositon = [77.62732288751079, 12.93719081056058];
 
     const geoJsonFeature = {
@@ -63,7 +64,7 @@ function App() {
 
     useEffect(() => {
         const map = new mapboxgl.Map({
-            container: mapContainer.current,
+            container: mapContainer.current ?? "",
             style: "mapbox://styles/mapbox/light-v11",
             zoom: zoom,
             pitch: 60,
@@ -73,7 +74,7 @@ function App() {
 
         const tb = (window.tb = new Threebox(
             map,
-            map.getCanvas().getContext("webgl"),
+            map.getCanvas().getContext("webgl") as WebGLRenderingContext,
             {
                 defaultLights: true,
                 enableSelectingObjects: true,
@@ -94,7 +95,7 @@ function App() {
             };
 
             //This is where the model is added
-            tb.loadObj(oppBuildingOptions, (model) => {
+            tb.loadObj(oppBuildingOptions, (model: any) => {
                 console.log("loaded object");
                 const obj = model.setCoords([
                     77.62692186385078, 12.936948284631768,
@@ -110,7 +111,7 @@ function App() {
                 source: {
                     features: [],
                 },
-                render: function (gl, matrix) {
+                render: function (gl: WebGLRenderingContext, matrix: number[]) {
                     tb.update();
                 },
             });
@@ -158,7 +159,7 @@ function App() {
             };
 
             //This is where the model is added
-            tb.loadObj(options, (model) => {
+            tb.loadObj(options, (model: any) => {
                 console.log("loaded object");
                 const obj = model.setCoords(modelPositon);
                 obj.addEventListener("SelectedChange", onSelectedChange, false);
@@ -169,7 +170,7 @@ function App() {
                 id: "custom_layer",
                 type: "custom",
                 renderingMode: "3d",
-                render: function (gl, matrix) {
+                render: function (gl: WebGLRenderingContext, matrix: number[]) {
                     tb.update();
                 },
             });

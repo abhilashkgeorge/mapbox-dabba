@@ -8,6 +8,7 @@ import { Button } from "./components/ui/button";
 import type { ThreeboxOptions } from "./lib/types";
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/ui/dialog";
+import Navigation from "./Navigation";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
@@ -16,7 +17,7 @@ function App() {
     const [lng, setLng] = useState<number>(77.62684);
     const [lat, setLat] = useState<number>(12.937156);
     const [zoom, setZoom] = useState<number>(19);
-    
+
     const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -206,6 +207,7 @@ function App() {
 
     return (
         <div className="App">
+            <Navigation />
             <div
                 ref={mapContainer}
                 className="map-container"

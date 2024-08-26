@@ -1,5 +1,5 @@
 
-export type ThreeboxOptions {
+export type ThreeboxOptions = {
     id: string;
     type: string;
     obj: string;

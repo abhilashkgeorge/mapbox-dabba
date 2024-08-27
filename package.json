@@ -15,11 +15,13 @@
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@react-three/drei": "^9.111.3",
+    "@react-three/fiber": "^8.17.6",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.95.3",
+    "@types/three": "^0.167.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.436.0",
@@ -29,6 +31,7 @@
     "react-router-dom": "^6.26.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.167.1",
     "threebox-plugin": "^2.2.7"
   },
   "devDependencies": {

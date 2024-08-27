@@ -8,7 +8,8 @@ import { Button } from './components/ui/button';
 import type { ThreeboxOptions } from './lib/types';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog';
-import Navigation from './Navigation';
+import Navigation from "./Navigation";
+import { Billboard, Cylinder, Text } from '@react-three/drei';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
@@ -174,6 +175,12 @@ function App() {
         obj.addEventListener('SelectedChange', onSelectedChange, false);
         tb.add(obj);
       });
+            //This is where the model is added
+            tb.loadObj(options, (model: any) => {
+                const obj = model.setCoords(modelPositon);
+                obj.addEventListener("SelectedChange", onSelectedChange, false);
+                tb.add(obj);
+            });
 
       map.addLayer({
         id: 'custom_layer',

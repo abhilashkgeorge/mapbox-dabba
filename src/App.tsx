@@ -8,8 +8,8 @@ import { Button } from './components/ui/button';
 import type { ThreeboxOptions } from './lib/types';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './components/ui/dialog';
-import Navigation from "./Navigation";
-import { Billboard, Cylinder, Text } from '@react-three/drei';
+import Navigation from './Navigation';
+import BuildingModal from './modals/BuildingModal';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
@@ -214,17 +214,11 @@ function App() {
     <div className="App">
       <Navigation />
       <div ref={mapContainer} className="map-container" style={{ pointerEvents: 'auto' }} />
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] m-auto p-0 bg-white bg-opacity-90">
-          <DialogHeader className="p-6">
-            <DialogTitle>{selectedBuilding}</DialogTitle>
-          </DialogHeader>
-          <div className="p-6 overflow-auto h-[calc(90vh-4rem)]">
-            {/* Add your building-specific content here */}
-            <p>Details about {selectedBuilding}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <BuildingModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        buildingName={selectedBuilding}
+      />
     </div>
   );
 }

@@ -31,9 +31,7 @@ const Navigation = () => {
               <DropdownMenuItem className="cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
                 <span>
-                  {publicKey?.toBase58().substring(0, 4) +
-                    '...' +
-                    publicKey?.toBase58().substring(publicKey?.toBase58().length - 4)}
+                  {publicKey?.toBase58().slice(0, 4) + '....' + publicKey?.toBase58().slice(-4)}
                 </span>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">

@@ -15,7 +15,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 const Navigation = () => {
   const { setVisible, visible } = useWalletModal();
   const { connect, connected, disconnect, publicKey } = useWallet();
-  console.log(connected);
 
   return (
     <div className="bg-transparent absolute top-0 right-0 h-10 p-4 z-10">

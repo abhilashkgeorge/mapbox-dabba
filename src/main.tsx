@@ -2,6 +2,7 @@ import React, { FC, ReactNode, StrictMode, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import Building from './Building.tsx';
+import Test from './Test.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
@@ -39,7 +40,8 @@ createRoot(document.getElementById('root')!).render(
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="buildings/:buildingId" element={<Building />} />
+          <Route path="/buildings/:buildingId" element={<Building />} />
+          <Route path="/test" element={<Test />} />
         </Routes>
       </Router>
     </Context>

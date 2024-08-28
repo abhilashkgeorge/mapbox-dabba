@@ -75,7 +75,7 @@ function App() {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainer.current ?? '',
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'mapbox://styles/mapbox/standard',
       zoom: zoom,
       pitch: 60,
       bearing: -150,
@@ -154,6 +154,15 @@ function App() {
         paint: {
           'line-color': '#E49B0F',
           'line-width': 3,
+        },
+      });
+
+      map.addLayer({
+        id: 'eraser',
+        type: 'clip',
+        source: 'maine',
+        layout: {
+          'clip-layer-types': ['symbol', 'model'],
         },
       });
 

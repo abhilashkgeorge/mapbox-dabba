@@ -1,12 +1,13 @@
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef } from 'react';
+import { useGLTF } from '@react-three/drei';
 
-export const ApartmentModel = (props: any)  =>{
-  const { nodes, materials } = useGLTF('./src/assets/apartment.gltf')
+export const ApartmentModel = (props: any) => {
+  const { nodes, materials } = useGLTF('./src/assets/apartment.gltf');
+
   return (
     <group {...props} dispose={null}>
       <group scale={0.01}>
-        <group rotation={[-Math.PI / 2, 0, 0]} scale={1}>
+        <group rotation={[-Math.PI / 2, 0, 0]} scale={1} position={[1.5, 0, 2]}>
           <mesh
             castShadow
             receiveShadow
@@ -64,9 +65,9 @@ export const ApartmentModel = (props: any)  =>{
         </group>
       </group>
     </group>
-  )
-}
+  );
+};
 
-useGLTF.preload('/apartment.gltf')
+useGLTF.preload('/apartment.gltf');
 
 export default ApartmentModel;

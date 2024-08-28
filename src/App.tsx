@@ -175,12 +175,12 @@ function App() {
         obj.addEventListener('SelectedChange', onSelectedChange, false);
         tb.add(obj);
       });
-            //This is where the model is added
-            tb.loadObj(options, (model: any) => {
-                const obj = model.setCoords(modelPositon);
-                obj.addEventListener("SelectedChange", onSelectedChange, false);
-                tb.add(obj);
-            });
+      //This is where the model is added
+      tb.loadObj(options, (model: any) => {
+        const obj = model.setCoords(modelPositon);
+        obj.addEventListener('SelectedChange', onSelectedChange, false);
+        tb.add(obj);
+      });
 
       map.addLayer({
         id: 'custom_layer',

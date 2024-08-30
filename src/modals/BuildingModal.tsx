@@ -3,25 +3,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/
 import {
   Bar,
   BarChart,
-  Label,
+  CartesianGrid,
   LabelList,
   PolarAngleAxis,
   RadialBar,
   RadialBarChart,
-  Rectangle,
-  ReferenceLine,
   XAxis,
-  YAxis,
 } from 'recharts';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../components/ui/chart';
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '../components/ui/chart';
+import { TrendingUp } from 'lucide-react';
 
 type BuildingModalProps = {
   isModalOpen: boolean;
@@ -34,280 +31,67 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
   setIsModalOpen,
   buildingName,
 }) => {
+  const chartData = [
+    { day: '01', data_consumed: 186 },
+    { day: '02', data_consumed: 305 },
+    { day: '03', data_consumed: 237 },
+    { day: '04', data_consumed: 73 },
+    { day: '05', data_consumed: 209 },
+    { day: '06', data_consumed: 214 },
+  ];
+
+  const chartConfig = {
+    data_consumed: {
+      label: 'Data Consumed',
+      color: 'red',
+    },
+  };
+
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <DialogContent className="w-[95vw] h-[95vh] max-w-[95vw] max-h-[95vh] m-auto p-0 bg-white bg-opacity-90 overflow-hidden flex flex-col">
         <DialogHeader className="p-4 sm:p-6">
           <DialogTitle>Manage {buildingName}</DialogTitle>
         </DialogHeader>
-        <div className="overflow-y-auto flex-grow p-4 sm:p-6">
-          <div className="chart-wrapper mx-auto flex flex-col items-center justify-center gap-6 sm:flex-row sm:flex-wrap sm:items-start">
-            <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
-              <Card className="w-full" x-chunk="charts-01-chunk-0">
-                <CardHeader className="space-y-0 pb-2">
-                  <CardDescription>Today</CardDescription>
-                  <CardTitle className="text-4xl tabular-nums">
-                    12,584{' '}
-                    <span className="font-sans text-sm font-normal tracking-normal text-muted-foreground">
-                      steps
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      steps: {
-                        label: 'Steps',
-                        color: 'hsl(var(--chart-1))',
-                      },
-                    }}
-                  >
-                    <BarChart
-                      accessibilityLayer
-                      margin={{
-                        left: -4,
-                        right: -4,
-                      }}
-                      data={[
-                        {
-                          date: '2024-01-01',
-                          steps: 2000,
-                        },
-                        {
-                          date: '2024-01-02',
-                          steps: 2100,
-                        },
-                        {
-                          date: '2024-01-03',
-                          steps: 2200,
-                        },
-                        {
-                          date: '2024-01-04',
-                          steps: 1300,
-                        },
-                        {
-                          date: '2024-01-05',
-                          steps: 1400,
-                        },
-                        {
-                          date: '2024-01-06',
-                          steps: 2500,
-                        },
-                        {
-                          date: '2024-01-07',
-                          steps: 1600,
-                        },
-                      ]}
-                    >
-                      <Bar
-                        dataKey="steps"
-                        fill="var(--color-steps)"
-                        radius={5}
-                        fillOpacity={0.6}
-                        activeBar={<Rectangle fillOpacity={0.8} />}
-                      />
-                      <XAxis
-                        dataKey="date"
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={4}
-                        tickFormatter={value => {
-                          return new Date(value).toLocaleDateString('en-US', {
-                            weekday: 'short',
-                          });
-                        }}
-                      />
-                      <ChartTooltip
-                        defaultIndex={2}
-                        content={
-                          <ChartTooltipContent
-                            hideIndicator
-                            labelFormatter={value => {
-                              return new Date(value).toLocaleDateString('en-US', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                              });
-                            }}
-                          />
-                        }
-                        cursor={false}
-                      />
-                      <ReferenceLine
-                        y={1200}
-                        stroke="hsl(var(--muted-foreground))"
-                        strokeDasharray="3 3"
-                        strokeWidth={1}
-                      >
-                        <Label
-                          position="insideBottomLeft"
-                          value="Average Steps"
-                          offset={10}
-                          fill="hsl(var(--foreground))"
-                        />
-                        <Label
-                          position="insideTopLeft"
-                          value="12,343"
-                          className="text-lg"
-                          fill="hsl(var(--foreground))"
-                          offset={10}
-                          startOffset={100}
-                        />
-                      </ReferenceLine>
-                    </BarChart>
-                  </ChartContainer>
-                </CardContent>
-                <CardFooter className="flex-col items-start gap-1">
-                  <CardDescription>
-                    Over the past 7 days, you have walked{' '}
-                    <span className="font-medium text-foreground">53,305</span> steps.
-                  </CardDescription>
-                  <CardDescription>
-                    You need <span className="font-medium text-foreground">12,584</span> more steps
-                    to reach your goal.
-                  </CardDescription>
-                </CardFooter>
-              </Card>
-            </div>
-            <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
-              <Card className="w-full" x-chunk="charts-01-chunk-2">
-                <CardHeader>
-                  <CardTitle>Progress</CardTitle>
-                  <CardDescription>
-                    You're average more steps a day this year than last year.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className="grid auto-rows-min gap-2">
-                    <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-                      12,453
-                      <span className="text-sm font-normal text-muted-foreground">steps/day</span>
-                    </div>
-                    <ChartContainer
-                      config={{
-                        steps: {
-                          label: 'Steps',
-                          color: 'hsl(var(--chart-1))',
-                        },
-                      }}
-                      className="aspect-auto h-[32px] w-full"
-                    >
-                      <BarChart
-                        accessibilityLayer
-                        layout="vertical"
-                        margin={{
-                          left: 0,
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                        }}
-                        data={[
-                          {
-                            date: '2024',
-                            steps: 12435,
-                          },
-                        ]}
-                      >
-                        <Bar dataKey="steps" fill="var(--color-steps)" radius={4} barSize={32}>
-                          <LabelList
-                            position="insideLeft"
-                            dataKey="date"
-                            offset={8}
-                            fontSize={12}
-                            fill="white"
-                          />
-                        </Bar>
-                        <YAxis dataKey="date" type="category" tickCount={1} hide />
-                        <XAxis dataKey="steps" type="number" hide />
-                      </BarChart>
-                    </ChartContainer>
-                  </div>
-                  <div className="grid auto-rows-min gap-2">
-                    <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-                      10,103
-                      <span className="text-sm font-normal text-muted-foreground">steps/day</span>
-                    </div>
-                    <ChartContainer
-                      config={{
-                        steps: {
-                          label: 'Steps',
-                          color: 'hsl(var(--muted))',
-                        },
-                      }}
-                      className="aspect-auto h-[32px] w-full"
-                    >
-                      <BarChart
-                        accessibilityLayer
-                        layout="vertical"
-                        margin={{
-                          left: 0,
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                        }}
-                        data={[
-                          {
-                            date: '2023',
-                            steps: 10103,
-                          },
-                        ]}
-                      >
-                        <Bar dataKey="steps" fill="var(--color-steps)" radius={4} barSize={32}>
-                          <LabelList
-                            position="insideLeft"
-                            dataKey="date"
-                            offset={8}
-                            fontSize={12}
-                            fill="hsl(var(--muted-foreground))"
-                          />
-                        </Bar>
-                        <YAxis dataKey="date" type="category" tickCount={1} hide />
-                        <XAxis dataKey="steps" type="number" hide />
-                      </BarChart>
-                    </ChartContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+        <div className="overflow-y-auto flex-grow p-4">
+          <div className="chart-wrapper mx-auto flex flex-col items-center justify-center gap-6 lg:flex-row lg:items-start">
             <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
               <Card className="w-full" x-chunk="charts-01-chunk-5">
                 <CardContent className="flex gap-4 p-4">
                   <div className="grid items-center gap-2">
                     <div className="grid flex-1 auto-rows-min gap-0.5">
-                      <div className="text-sm text-muted-foreground">Move</div>
+                      <div className="text-sm text-muted-foreground">Bandwidth Consumed</div>
                       <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
                         562/600
-                        <span className="text-sm font-normal text-muted-foreground">kcal</span>
+                        <span className="text-sm font-normal text-muted-foreground">GB</span>
                       </div>
                     </div>
                     <div className="grid flex-1 auto-rows-min gap-0.5">
-                      <div className="text-sm text-muted-foreground">Exercise</div>
+                      <div className="text-sm text-muted-foreground">People Connected</div>
                       <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
                         73/120
-                        <span className="text-sm font-normal text-muted-foreground">min</span>
                       </div>
                     </div>
                     <div className="grid flex-1 auto-rows-min gap-0.5">
-                      <div className="text-sm text-muted-foreground">Stand</div>
+                      <div className="text-sm text-muted-foreground">Routers Installed</div>
                       <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
                         8/12
-                        <span className="text-sm font-normal text-muted-foreground">hr</span>
                       </div>
                     </div>
                   </div>
                   <ChartContainer
                     config={{
                       move: {
-                        label: 'Move',
-                        color: 'hsl(var(--chart-1))',
+                        label: 'Bandwidth Consumed',
+                        color: 'red',
                       },
                       exercise: {
-                        label: 'Exercise',
-                        color: 'hsl(var(--chart-2))',
+                        label: 'People Connected',
+                        color: 'green',
                       },
                       stand: {
-                        label: 'Stand',
-                        color: 'hsl(var(--chart-3))',
+                        label: 'Routers Installed',
+                        color: 'blue',
                       },
                     }}
                     className="mx-auto aspect-square w-full max-w-[80%]"
@@ -321,17 +105,17 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
                       }}
                       data={[
                         {
-                          activity: 'stand',
+                          activity: 'routers-installed',
                           value: (8 / 12) * 100,
                           fill: 'var(--color-stand)',
                         },
                         {
-                          activity: 'exercise',
+                          activity: 'people-connected',
                           value: (46 / 60) * 100,
                           fill: 'var(--color-exercise)',
                         },
                         {
-                          activity: 'move',
+                          activity: 'bandwidth-consumed',
                           value: (245 / 360) * 100,
                           fill: 'var(--color-move)',
                         },
@@ -352,80 +136,37 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
                   </ChartContainer>
                 </CardContent>
               </Card>
-              <Card className="w-full mt-6" x-chunk="charts-01-chunk-6">
-                <CardHeader className="p-4 pb-0">
-                  <CardTitle>Active Energy</CardTitle>
-                  <CardDescription>
-                    You're burning an average of 754 calories per day. Good job!
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-2">
-                  <div className="flex items-baseline gap-2 text-3xl font-bold tabular-nums leading-none">
-                    1,254
-                    <span className="text-sm font-normal text-muted-foreground">kcal/day</span>
-                  </div>
-                  <ChartContainer
-                    config={{
-                      calories: {
-                        label: 'Calories',
-                        color: 'hsl(var(--chart-1))',
-                      },
-                    }}
-                    className="ml-auto w-[64px]"
-                  >
-                    <BarChart
-                      accessibilityLayer
-                      margin={{
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                      }}
-                      data={[
-                        {
-                          date: '2024-01-01',
-                          calories: 354,
-                        },
-                        {
-                          date: '2024-01-02',
-                          calories: 514,
-                        },
-                        {
-                          date: '2024-01-03',
-                          calories: 345,
-                        },
-                        {
-                          date: '2024-01-04',
-                          calories: 734,
-                        },
-                        {
-                          date: '2024-01-05',
-                          calories: 645,
-                        },
-                        {
-                          date: '2024-01-06',
-                          calories: 456,
-                        },
-                        {
-                          date: '2024-01-07',
-                          calories: 345,
-                        },
-                      ]}
-                    >
-                      <Bar
-                        dataKey="calories"
-                        fill="var(--color-calories)"
-                        radius={2}
-                        fillOpacity={0.2}
-                        activeIndex={6}
-                        activeBar={<Rectangle fillOpacity={0.8} />}
-                      />
-                      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={4} hide />
-                    </BarChart>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
             </div>
+
+            <Card className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
+              <CardHeader>
+                <CardTitle>Data Consumption for last 7 days</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig}>
+                  <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="day"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                      tickFormatter={value => value.slice(0, 3)}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar dataKey="data_consumed" fill="red" radius={8}>
+                      <LabelList fill="white" position="inside" offset={12} fontSize={12} />
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </CardContent>
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                <div className="flex gap-2 font-medium leading-none">
+                  Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                </div>
+              </CardFooter>
+            </Card>
           </div>
         </div>
       </DialogContent>

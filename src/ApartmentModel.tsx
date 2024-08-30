@@ -1,5 +1,4 @@
-import React from 'react';
-import { useGLTF } from '@react-three/drei';
+import { Billboard, Cylinder, useGLTF, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { GLTF } from 'three-stdlib';
 
@@ -31,14 +30,22 @@ type GLTFResult = GLTF & {
 export const ApartmentModel = ({ onBuildingSelect, props }: any) => {
   const { nodes, materials } = useGLTF('./src/assets/apartment.gltf') as GLTFResult;
 
-  const handleOnClick = () => {
-    console.log('clicked');
-  };
+  const buildingName = 'RMZ Gateway';
 
   return (
-    <group {...props} dispose={null} onClick={onBuildingSelect}>
-      <group scale={0.01}>
-        <group rotation={[-Math.PI / 2, 0, 0]} scale={1} position={[1.5, 0, 2]}>
+    <group {...props} dispose={null} onClick={() => onBuildingSelect(buildingName)}>
+      <group scale={1}>
+        <Cylinder args={[1, 0.1, 40]} position={[0, 40, 0]}>
+          <meshPhongMaterial color="gray" opacity={0.1} />
+        </Cylinder>
+        <Billboard position={[0, 80, 0]}>
+          <Text fontSize={17} color="black">
+            {buildingName}
+          </Text>
+        </Billboard>
+      </group>
+      <group scale={5}>
+        <group rotation={[-Math.PI / 2, 0, -0.85]} scale={1.35} position={[1.25, 0, 1.4]}>
           <mesh
             castShadow
             receiveShadow

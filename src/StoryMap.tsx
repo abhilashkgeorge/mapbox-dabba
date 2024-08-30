@@ -1,24 +1,11 @@
-import Mapbox, { LngLatLike } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React, {
-  FC,
-  PropsWithChildren,
-  ReactNode,
-  memo,
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-} from 'react';
-import Map, { Layer, Source, MapRef } from 'react-map-gl';
+import { FC, PropsWithChildren, ReactNode, useRef, useState } from 'react';
+import Map, { MapRef } from 'react-map-gl';
 import type { MapMouseEvent } from 'mapbox-gl';
-import type { GeoJSON } from 'geojson';
 import { Canvas, CanvasProps } from 'react-three-map';
-import { Box, useGLTF } from '@react-three/drei';
 import { ApartmentModel } from './ApartmentModel';
 import BuildingModal from './modals/BuildingModal';
 import Navigation from './Navigation';
-import * as THREE from 'three';
 import { koramangalaCoordinates } from './coordinates/areas/koramangala';
 import mapBaseStyles from './mapBaseStyles';
 import type { StyleSpecification } from 'mapbox-gl';
@@ -50,8 +37,8 @@ export const StoryMapbox: FC<StoryMapProps> = ({
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  function onBuildingSelect(e: THREE.Intersection): void {
-    openBuildingModal('buildingId');
+  function onBuildingSelect(buildingName: string): void {
+    openBuildingModal(buildingName);
   }
 
   function openBuildingModal(buildingId: string): void {
@@ -183,7 +170,7 @@ export const StoryMapbox: FC<StoryMapProps> = ({
           <Canvas latitude={latitude} longitude={longitude}>
             {children}
             <Lights />
-            <object3D scale={500}>
+            <object3D scale={1}>
               <ApartmentModel onBuildingSelect={onBuildingSelect} />
             </object3D>
           </Canvas>

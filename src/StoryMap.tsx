@@ -1,6 +1,15 @@
 import Mapbox, { LngLatLike } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React, { FC, PropsWithChildren, ReactNode, memo, useRef, useEffect, useState } from 'react';
+import React, {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  memo,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
 import Map, { Layer, Source, MapRef } from 'react-map-gl';
 import type { MapMouseEvent } from 'mapbox-gl';
 import type { GeoJSON } from 'geojson';
@@ -51,8 +60,9 @@ export const StoryMapbox: FC<StoryMapProps> = ({
   }
 
   const handleClickOnMap = (e: MapMouseEvent) => {
-    console.log(e.features);
-    console.log(e.lngLat.toBounds());
+    if (mapRef?.current?.getZoom() > 15) {
+      return;
+    }
 
     const feature = e.features?.[0];
     if (feature) {
@@ -114,6 +124,25 @@ export const StoryMapbox: FC<StoryMapProps> = ({
           'fill-opacity': 0.5,
         },
         maxzoom: 15,
+      },
+      {
+        id: 'maine-name',
+        type: 'symbol',
+        source: 'maine',
+        paint: {
+          'text-color': '#000000',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2,
+        },
+        maxzoom: 15,
+        layout: {
+          'text-field': 'Koramangala',
+          'text-size': 8,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-transform': 'uppercase',
+          'text-letter-spacing': 0.05,
+          'text-offset': [0, 0],
+        },
       },
       {
         id: 'outline',

@@ -36,14 +36,14 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
 }) => {
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-      <DialogContent className="w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] m-auto p-0 bg-white bg-opacity-90 overflow-hidden flex flex-col">
-        <DialogHeader className="p-6">
+      <DialogContent className="w-[95vw] h-[95vh] max-w-[95vw] max-h-[95vh] m-auto p-0 bg-white bg-opacity-90 overflow-hidden flex flex-col">
+        <DialogHeader className="p-4 sm:p-6">
           <DialogTitle>Manage {buildingName}</DialogTitle>
         </DialogHeader>
-        <div className="overflow-y-auto flex-grow">
-          <div className="chart-wrapper mx-auto flex max-w-6xl flex-col flex-wrap items-start justify-center gap-6 sm:flex-row">
-            <div className="grid w-full gap-6 sm:grid-cols-2 lg:max-w-[22rem] lg:grid-cols-1 xl:max-w-[25rem]">
-              <Card className="lg:max-w-md" x-chunk="charts-01-chunk-0">
+        <div className="overflow-y-auto flex-grow p-4 sm:p-6">
+          <div className="chart-wrapper mx-auto flex flex-col items-center justify-center gap-6 sm:flex-row sm:flex-wrap sm:items-start">
+            <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
+              <Card className="w-full" x-chunk="charts-01-chunk-0">
                 <CardHeader className="space-y-0 pb-2">
                   <CardDescription>Today</CardDescription>
                   <CardTitle className="text-4xl tabular-nums">
@@ -169,8 +169,8 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
                 </CardFooter>
               </Card>
             </div>
-            <div className="grid w-full flex-1 gap-6 lg:max-w-[20rem]">
-              <Card className="max-w-xs" x-chunk="charts-01-chunk-2">
+            <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
+              <Card className="w-full" x-chunk="charts-01-chunk-2">
                 <CardHeader>
                   <CardTitle>Progress</CardTitle>
                   <CardDescription>
@@ -269,8 +269,8 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
                 </CardContent>
               </Card>
             </div>
-            <div className="grid w-full flex-1 gap-6">
-              <Card className="max-w-xs" x-chunk="charts-01-chunk-5">
+            <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md">
+              <Card className="w-full" x-chunk="charts-01-chunk-5">
                 <CardContent className="flex gap-4 p-4">
                   <div className="grid items-center gap-2">
                     <div className="grid flex-1 auto-rows-min gap-0.5">
@@ -352,7 +352,7 @@ const BuildingModal: React.FC<BuildingModalProps> = ({
                   </ChartContainer>
                 </CardContent>
               </Card>
-              <Card className="max-w-xs" x-chunk="charts-01-chunk-6">
+              <Card className="w-full mt-6" x-chunk="charts-01-chunk-6">
                 <CardHeader className="p-4 pb-0">
                   <CardTitle>Active Energy</CardTitle>
                   <CardDescription>
